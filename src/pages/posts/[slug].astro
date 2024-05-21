@@ -101,7 +101,6 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
 >
   <div slot="main" class={styles.main}>
     <div class={styles.post}>
-      <PostDate post={post} />
       <PostTags post={post} />
       <PostTitle post={post} enableLink={false} />
       <PostBody blocks={blocks} />
@@ -120,8 +119,6 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
         (p: interfaces.Post) => p.Slug !== post.Slug
       )}
     />
-    <BlogPostsLink heading="Recommended" posts={rankedPosts} />
-    <BlogPostsLink heading="Latest posts" posts={recentPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
   </div>
 </Layout>
