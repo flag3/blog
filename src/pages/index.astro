@@ -30,7 +30,7 @@ const [posts, tags, numberOfPages] = await Promise.all([
         <NoContents contents={posts} />
       ) : (
         posts.map((post) => (
-          post.Tags[0].name !== 'deprecated' &&
+          post.Excerpt !== "" &&
           <div class={styles.post} key={post.Slug}>
             <PostTags post={post} />
             <PostTitle post={post} />

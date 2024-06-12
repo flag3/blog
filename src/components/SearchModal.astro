@@ -264,12 +264,14 @@
           item.getElementsByTagName('description')[0]?.textContent
         const pubDate = item.getElementsByTagName('pubDate')[0].textContent
 
-        feedItems.push({
-          title,
-          link,
-          description,
-          pubDate,
-        })
+        if (description) {
+          feedItems.push({
+            title,
+            link,
+            description,
+            pubDate,
+          })
+        }
       })
 
       fetched = true
