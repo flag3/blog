@@ -14,7 +14,7 @@ on:
 
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron: '0 23,11 * * *'
+    - cron: '0 11,23 * * *'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -35,14 +35,15 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    environment: DATABASE_ID
+    environment: github-pages
     env:
       # BUILD_PATH: subfolder
-      CUSTOM_DOMAIN: 'flag3.github.io'
+      CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
       DATABASE_ID: ${{ secrets.DATABASE_ID }}
       NOTION_API_SECRET: ${{ secrets.NOTION_API_SECRET }}
       NODE_VERSION: ${{ vars.NODE_VERSION }}
       PUBLIC_GA_TRACKING_ID: ${{ vars.PUBLIC_GA_TRACKING_ID }}
+      ENABLE_LIGHTBOX: ${{ vars.ENABLE_LIGHTBOX }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
