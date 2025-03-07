@@ -32,7 +32,7 @@ const { slug } = Astro.params
 
 const post = await getPostBySlug(slug)
 if (!post) {
-  throw new Error('Post not found. slug: ${slug}')
+  throw new Error(`Post not found. slug: ${slug}`)
 }
 
 const [blocks, allPosts, tags, postsHavingSameTag] =
