@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "build:cached": "npm run cache:fetch && astro build",
+    "build:cached": "pnpm run cache:fetch && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.ts,.astro src",
