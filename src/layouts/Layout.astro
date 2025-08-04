@@ -6,6 +6,7 @@ import '../styles/syntax-coloring.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
 import SearchButton from '../components/SearchButton.astro'
+import AboutButton from '../components/AboutButton.astro'
 
 export interface Props {
   title: string
@@ -139,6 +140,7 @@ if (database.Icon && database.Icon.Type === 'file') {
         </main>
 
         <aside>
+          <AboutButton />
           <SearchButton />
           <slot name="aside" />
         </aside>
