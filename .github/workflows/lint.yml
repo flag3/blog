@@ -17,8 +17,11 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Install packages
-        run: npm install
+        run: pnpm install
 
       - name: Run lint
-        run: npm run lint
+        run: pnpm run lint
