@@ -1,17 +1,17 @@
 {
   "name": "astro-notion-blog",
-  "type": "module",
   "version": "0.12.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "build:cached": "npm run cache:fetch && astro build",
+    "build:cached": "bun run cache:fetch && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.ts,.astro src",
-    "format": "npx prettier --write .",
+    "format": "bunx prettier --write .",
     "cache:fetch": "node scripts/blog-contents-cache.cjs",
     "cache:purge": "nx reset && rm -f tmp/*",
     "_fetch-notion-blocks": "node scripts/retrieve-block-children.cjs"
@@ -57,6 +57,9 @@
     "eslint-plugin-astro": "^1.6.0",
     "nx": "20.3.1"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.60.1"
+  },
   "nx": {
     "targets": {
       "_fetch-notion-blocks": {
@@ -76,8 +79,5 @@
     "includedScripts": [
       "_fetch-notion-blocks"
     ]
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.60.1"
   }
 }

@@ -2,20 +2,17 @@
 import type { SelectProperty } from '../../../../../lib/interfaces.ts'
 import {
   getPostsByTagAndPage,
-  getRankedPosts,
   getAllTags,
   getNumberOfPagesByTag,
 } from '../../../../../lib/notion/client.ts'
 import Layout from '../../../../../layouts/Layout.astro'
 import NoContents from '../../../../../components/NoContents.astro'
-import PostDate from '../../../../../components/PostDate.astro'
 import PostTags from '../../../../../components/PostTags.astro'
 import PostTitle from '../../../../../components/PostTitle.astro'
 import PostFeaturedImage from '../../../../../components/PostFeaturedImage.astro'
 import PostExcerpt from '../../../../../components/PostExcerpt.astro'
 import ReadMoreLink from '../../../../../components/ReadMoreLink.astro'
 import Pagination from '../../../../../components/Pagination.astro'
-import BlogPostsLink from '../../../../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../../../../components/BlogTagsLink.astro'
 import styles from '../../../../../styles/blog.module.css'
 import '../../../../../styles/notion-color.css'
@@ -40,9 +37,8 @@ export async function getStaticPaths() {
 
 const { tag, page } = Astro.params
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+const [posts, tags, numberOfPages] = await Promise.all([
   getPostsByTagAndPage(tag, parseInt(page, 10)),
-  getRankedPosts(),
   getAllTags(),
   getNumberOfPagesByTag(tag),
 ])
@@ -53,6 +49,7 @@ const currentTag = posts[0].Tags.find((t) => t.name === tag)
 <Layout
   title={`Posts in ${tag} ${page}/${numberOfPages}`}
   path={`/posts/tag/${tag}/page/${page}`}
+  tag={tag}
 >
   <div slot="main" class={styles.main}>
     <header>
@@ -68,7 +65,6 @@ const currentTag = posts[0].Tags.find((t) => t.name === tag)
       ) : (
         posts.map((post) => (
           <div class={styles.post} key={post.Slug}>
-            <PostDate post={post} />
             <PostTags post={post} />
             <PostTitle post={post} />
             <PostFeaturedImage post={post} />
@@ -89,7 +85,6 @@ const currentTag = posts[0].Tags.find((t) => t.name === tag)
   </div>
 
   <div slot="aside" class={styles.aside}>
-    <BlogPostsLink heading="Recommended" posts={rankedPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
   </div>
 </Layout>
