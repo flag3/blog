@@ -6,7 +6,7 @@ on:
 
 jobs:
   format:
-    name: Prettier
+    name: Oxfmt
     runs-on: ubuntu-latest
 
     steps:

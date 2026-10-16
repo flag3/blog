@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "overrides": [
+    {
+      "files": ["*.ts", "*.astro"],
+      "options": {
+        "semi": false
+      }
+    }
+  ],
+  "ignorePatterns": ["dist/**/*", "tmp/**/*", "public/scripts/fslightbox.js"]
+}
