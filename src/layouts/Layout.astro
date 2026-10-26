@@ -8,6 +8,7 @@ import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
 import SearchButton from '../components/SearchButton.astro'
 import AboutButton from '../components/AboutButton.astro'
+import { getCanonicalURL } from '../lib/site-url'
 
 export interface Props {
   title: string
@@ -18,7 +19,7 @@ export interface Props {
   tag: string
 }
 
-const { title = '', description = '', path = '/', ogImage = '', post, tag } = Astro.props
+const { title = '', description = '', ogImage = '', post, tag } = Astro.props
 
 const database = await getDatabase()
 
@@ -26,7 +27,8 @@ const language = post?.Tags?.some((tag) => tag.name === 'ja') ? 'ja' : tag === '
 
 const siteTitle = title ? `${title} - ${database.Title}` : database.Title
 const siteDescription = description ? description : database.Description
-const siteURL = new URL(getNavLink(path), Astro.site).toString()
+if (!Astro.site) throw new Error('A site URL is required to generate canonical URLs')
+const siteURL = getCanonicalURL(Astro.url.pathname, Astro.site)
 const siteOGImage = new URL(
   getStaticFilePath('/default-og-image.png'),
   Astro.site
