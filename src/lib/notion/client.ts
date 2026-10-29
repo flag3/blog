@@ -2,6 +2,7 @@ import { APIResponseError, Client } from '@notionhq/client'
 import retry from 'async-retry'
 import ExifTransformer from 'exif-be-gone'
 import fs, { createWriteStream } from 'node:fs'
+import path from 'node:path'
 import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import sharp from 'sharp'
@@ -452,6 +453,28 @@ export async function getAllTags(): Promise<SelectProperty[]> {
 }
 
 export async function downloadFile(url: URL) {
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    throw new Error('Unsupported download URL protocol')
+  }
+
+  const [directory, encodedFilename] = url.pathname.split('/').slice(-2)
+  const filename = decodeURIComponent(encodedFilename)
+  if (
+    !filename ||
+    filename === '.' ||
+    filename === '..' ||
+    /[/\\]/.test(filename) ||
+    filename.includes('\0')
+  ) {
+    throw new Error('Unsafe download filename')
+  }
+
+  const baseDir = path.resolve('./public/notion')
+  const filepath = path.resolve(baseDir, directory, filename)
+  if (!filepath.startsWith(baseDir + path.sep)) {
+    throw new Error('Download path escapes public/notion')
+  }
+
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
@@ -475,13 +498,10 @@ export async function downloadFile(url: URL) {
     return Promise.resolve()
   }
 
-  const dir = './public/notion/' + url.pathname.split('/').slice(-2)[0]
+  const dir = path.dirname(filepath)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
-
-  const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0])
-  const filepath = `${dir}/${filename}`
 
   const writeStream = createWriteStream(filepath)
   const rotate = sharp().rotate()
