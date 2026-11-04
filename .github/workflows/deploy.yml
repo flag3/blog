@@ -1,14 +1,65 @@
 name: Deploy
 
 on:
-  #schedule:
-  #  - cron: '5 23 * * 0' # 08:05(Mon) JST
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ['main']
+
+  schedule:
+    - cron: '5 23 * * 0,3' # 08:05(Mon,Thu) JST
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
 jobs:
-  curl:
-    name: Kick deploy hook
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: curl
-        run: curl -X POST '${{ secrets.DEPLOY_HOOK_URL }}'
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v6
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+      - name: Cache Notion page data
+        uses: actions/cache@v6
+        with:
+          path: tmp
+          key: ${{ runner.os }}-notion-${{ hashFiles('scripts/blog-contents-cache.cjs', 'scripts/retrieve-block-children.cjs', 'bun.lock') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ${{ runner.os }}-notion-${{ hashFiles('scripts/blog-contents-cache.cjs', 'scripts/retrieve-block-children.cjs', 'bun.lock') }}-
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Build
+        run: bun run build:cached
+        env:
+          DATABASE_ID: ${{ secrets.DATABASE_ID }}
+          NOTION_API_SECRET: ${{ secrets.NOTION_API_SECRET }}
+          PUBLIC_GA_TRACKING_ID: ${{ vars.PUBLIC_GA_TRACKING_ID }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          # Upload dist folder
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

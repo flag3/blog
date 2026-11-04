@@ -109,8 +109,8 @@ export async function getAllPosts(): Promise<Post[]> {
     },
     sorts: [
       {
-        property: 'Date',
-        direction: 'descending',
+        property: 'Rank',
+        direction: 'ascending',
       },
     ],
     page_size: 100,
