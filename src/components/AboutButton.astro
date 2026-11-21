@@ -1,0 +1,35 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<a href="https://flag3.github.io" class="about-button">
+  <Icon name="octicon:person-24" />
+  <span>About</span>
+</a>
+
+<style>
+  .about-button {
+    display: flex;
+    width: 100%;
+    background-color: transparent;
+    margin-bottom: 0.5rem;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.4rem 0.4rem;
+    color: #777;
+    font-size: 0.95rem;
+    font-weight: bold;
+  }
+  .about-button:hover {
+    cursor: pointer;
+    background-color: #ddd;
+  }
+  .about-button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.2rem;
+  }
+  [astro-icon="octicon:person-24"] {
+    color: var(--fg);
+  }
+</style>
