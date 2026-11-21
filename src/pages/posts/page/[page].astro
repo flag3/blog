@@ -1,9 +1,7 @@
 ---
-import BlogPostsLink from '../../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../../components/BlogTagsLink.astro'
 import NoContents from '../../../components/NoContents.astro'
 import Pagination from '../../../components/Pagination.astro'
-import PostDate from '../../../components/PostDate.astro'
 import PostExcerpt from '../../../components/PostExcerpt.astro'
 import PostFeaturedImage from '../../../components/PostFeaturedImage.astro'
 import PostTags from '../../../components/PostTags.astro'
@@ -14,7 +12,6 @@ import {
 getAllTags,
 getNumberOfPages,
 getPostsByPage,
-getRankedPosts,
 } from '../../../lib/notion/client.ts'
 import styles from '../../../styles/blog.module.css'
 
@@ -30,9 +27,8 @@ export async function getStaticPaths() {
 
 const { page } = Astro.params
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+const [posts, tags, numberOfPages] = await Promise.all([
   getPostsByPage(parseInt(page, 10)),
-  getRankedPosts(),
   getAllTags(),
   getNumberOfPages(),
 ])
@@ -50,7 +46,6 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
       ) : (
         posts.map((post) => (
           <div class={styles.post} key={post.Slug}>
-            <PostDate post={post} />
             <PostTags post={post} />
             <PostTitle post={post} />
             <PostFeaturedImage post={post} />
@@ -70,7 +65,6 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
   </div>
 
   <div slot="aside" class={styles.aside}>
-    <BlogPostsLink heading="Recommended" posts={rankedPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
   </div>
 </Layout>
